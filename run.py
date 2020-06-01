@@ -8,8 +8,7 @@ from gluoncv.model_zoo import get_model
 from gluoncv.data.transforms.pose import detector_to_simple_pose, heatmap_to_coord
 from gluoncv.utils.viz import cv_plot_image, cv_plot_keypoints
 from mxnet.gluon.data.vision import transforms
-from angle import CalAngle
-from sklearn.metrics import r2_score
+from angle import AngeleCal
 
 # 读取参数
 parser = argparse.ArgumentParser()
@@ -39,7 +38,7 @@ cap1 = cv.VideoCapture(args.input)
 cap2 = cv.VideoCapture(args.demo)
 
 # 标准特征
-stdAngle = np.loadtxt(args.data, delimiter='\t')
+angeleCal = AngeleCal(args.data)
 pos = 0
 
 ret1, frame1 = cap1.read()
@@ -62,24 +61,17 @@ while ret1 and ret2:
         img = cv_plot_keypoints(img, pred_coords, confidence, class_IDs, bounding_boxs, scores)
 
         # 动作对比
-        scores = []
-        # print(stdAngle[pos])
-        visibles = ~np.isnan(stdAngle[pos])     # 样本中没有缺失值的点
-        angles = CalAngle(pred_coords, confidence)
-        for angle in angles:
-            angle_v = angle[visibles]           # 过滤样本中也有缺失值的点
-            print(angle_v)
-            if np.isnan(angle_v).any():         # 还有缺失值
-                scores.append('NaN')
-            else:
-                scores.append('{:.4f}'.format(r2_score(angle_v, stdAngle[pos][visibles])))
-        pos += 1
+        angles = AngeleCal.cal(pred_coords, confidence)
+        results = angeleCal.compare(angles)
+    else:
+        results = ['NaN']
 
+    print('result', results)
     cv_plot_image(img, 
         upperleft_txt=f"FPS:{(1.0 / (time.time() - fps_time)):.2f}", upperleft_txt_corner=(10,25),
-        left_txt_list=scores, canvas_name='pose')
+        left_txt_list=results, canvas_name='pose')
     fps_time = time.time()
-    # cv.imshow('demo', frame2)
+    cv.imshow('demo', frame2)
     
     # ESC键退出
     if cv.waitKey(1) == 27:

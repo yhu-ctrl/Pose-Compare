@@ -8,7 +8,7 @@ from gluoncv.model_zoo import get_model
 from gluoncv.data.transforms.pose import detector_to_simple_pose, heatmap_to_coord
 from gluoncv.utils.viz import cv_plot_image, cv_plot_keypoints
 from mxnet.gluon.data.vision import transforms
-from angle import CalAngle
+from angle import AngeleCal
 
 # 读取参数
 parser = argparse.ArgumentParser()
@@ -53,7 +53,7 @@ while ret:
         pred_coords, confidence = heatmap_to_coord(predicted_heatmap, upscale_bbox)
         img = cv_plot_keypoints(img, pred_coords, confidence, class_IDs, bounding_boxs, scores)
 
-        X = CalAngle(pred_coords, confidence)[0]
+        X = AngeleCal.cal(pred_coords, confidence)[0]
         print(X)
         features.append(X)
     else:
