@@ -31,9 +31,10 @@ ret2, frame2 = cap2.read()
 while ret1 and ret2:
 
     # 目标检测
-    frame = mx.nd.array(cv.cvtColor(frame1, cv.COLOR_BGR2RGB)).astype('uint8')
+    frame1 = mx.nd.array(cv.cvtColor(frame1, cv.COLOR_BGR2RGB)).astype('uint8')
+    frame2 = cv.cvtColor(frame2, cv.COLOR_BGR2RGB) 
 
-    x, img = transform_test(frame, short=512)
+    x, img = transform_test(frame1, short=512)
     x = x.as_in_context(ctx)
     class_IDs, scores, bounding_boxs = detector(x)
 
@@ -51,10 +52,16 @@ while ret1 and ret2:
     else:
         results = ['NaN']
 
+    # 缩放示例视频并合并显示
+    width = int(img.shape[1])
+    height = int(img.shape[0])
+    dim = (width, int(height / width * width))
+    frame2 = cv.resize(frame2, dim)
+    img = np.hstack((img, frame2))
+
     cv_plot_image(img, 
         upperleft_txt=FPS.fps(), upperleft_txt_corner=(10,25),
-        left_txt_list=results, canvas_name='pose')
-    cv.imshow('demo', frame2)
+        left_txt_list=results)
     
     # ESC键退出
     if cv.waitKey(1) == 27:
