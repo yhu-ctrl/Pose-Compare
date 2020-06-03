@@ -18,9 +18,9 @@ $ pip install -r requirements.txt
 提取示例视频数据
 
 ```sh
-$ data.py --input 示例视频 --output 示例数据.tsv
+$ python data.py --input 示例视频 --output 示例数据.tsv
 ```
 
 动作对比
 ```sh
-$ run.py --input 输入视频 --demo 示例视频 --data 示例数据.tsv
+$ python run.py --input 输入视频 --demo 示例视频 --data 示例数据.tsv
