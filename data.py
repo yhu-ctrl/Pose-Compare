@@ -22,14 +22,14 @@ ret, frame = cap.read()
 features = []
 while ret:
 
-    # 目标检测
     frame = mx.nd.array(cv.cvtColor(frame, cv.COLOR_BGR2RGB)).astype('uint8')
 
+    # 目标检测
     x, img = transform_test(frame, short=512)
     x = x.as_in_context(ctx)
     class_IDs, scores, bounding_boxs = detector(x)
 
-    pose_input, upscale_bbox = detector_to_simple_pose(img, class_IDs, scores, bounding_boxs, output_shape=(128, 96), ctx=ctx)
+    pose_input, upscale_bbox = detector_to_simple_pose(img, class_IDs, scores, bounding_boxs, ctx=ctx)
 
     if len(upscale_bbox) > 0:
         predicted_heatmap = estimator(pose_input)

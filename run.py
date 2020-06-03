@@ -30,15 +30,15 @@ ret2, frame2 = cap2.read()
 
 while ret1 and ret2:
 
-    # 目标检测
     frame1 = mx.nd.array(cv.cvtColor(frame1, cv.COLOR_BGR2RGB)).astype('uint8')
     frame2 = cv.cvtColor(frame2, cv.COLOR_BGR2RGB) 
 
+    # 目标检测
     x, img = transform_test(frame1, short=512)
     x = x.as_in_context(ctx)
     class_IDs, scores, bounding_boxs = detector(x)
 
-    pose_input, upscale_bbox = detector_to_simple_pose(img, class_IDs, scores, bounding_boxs, output_shape=(128, 96), ctx=ctx)
+    pose_input, upscale_bbox = detector_to_simple_pose(img, class_IDs, scores, bounding_boxs, ctx=ctx)
 
     # 姿态识别
     if len(upscale_bbox) > 0:
@@ -53,10 +53,9 @@ while ret1 and ret2:
         results = ['NaN']
 
     # 缩放示例视频并合并显示
-    width = int(img.shape[1])
     height = int(img.shape[0])
-    dim = (width, int(height / width * width))
-    frame2 = cv.resize(frame2, dim)
+    width = int(height * frame2.shape[1] / frame2.shape[0])
+    frame2 = cv.resize(frame2, (width, height))
     img = np.hstack((img, frame2))
 
     cv_plot_image(img, 

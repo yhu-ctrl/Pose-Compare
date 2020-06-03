@@ -8,8 +8,8 @@ detector = get_model(
     pretrained=True, ctx=ctx)
 
 estimator = get_model(
-    "simple_pose_resnet18_v1b",
-    pretrained='ccd24037', ctx=ctx)
+    "simple_pose_resnet101_v1d",
+    pretrained=True, ctx=ctx)
 
 detector.reset_class(classes=['person'], reuse_weights={'person':'person'})
 
