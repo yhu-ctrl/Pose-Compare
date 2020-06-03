@@ -2,7 +2,7 @@ import numpy as np
 from mxnet import ndarray
 from sklearn.metrics import r2_score
 
-
+np.seterr(invalid='ignore')
 # 需要测量角度的部位，每个部位需要用它本身和与之连接的两个节点来计算角度
 # 第一点是关节点
 KeyPoints = [
