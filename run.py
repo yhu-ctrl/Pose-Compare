@@ -41,6 +41,7 @@ while ret1 and ret2:
     pose_input, upscale_bbox = detector_to_simple_pose(img, class_IDs, scores, bounding_boxs, ctx=ctx)
 
     # 姿态识别
+    results = None
     if len(upscale_bbox) > 0:
         predicted_heatmap = estimator(pose_input)
         pred_coords, confidence = heatmap_to_coord(predicted_heatmap, upscale_bbox)
@@ -48,9 +49,7 @@ while ret1 and ret2:
 
         # 动作对比
         angles = AngeleCal.cal(pred_coords, confidence)
-        results = angeleCal.compare(angles)
-    else:
-        results = ['NaN']
+        results = angeleCal.compare(angles).astype('U5')
 
     # 缩放示例视频并合并显示
     height = int(img.shape[0])

@@ -61,16 +61,16 @@ class AngeleCal():
     # 角度对比
     def compare(self, angles):
         stdAngle = self.stdAngles[self.pos]     # 每次读取一行标准角度
-        scores = []
+        scores = np.empty(len(angles))
         visibles = ~np.isnan(stdAngle)          # 样本中没有缺失值的
         stdAngle = stdAngle[visibles]           # 过滤掉样本中的缺失值
-        for angle in angles:
+        for i, angle in enumerate(angles):
             angle_v = angle[visibles]           # 过滤样本中也有缺失值的点
             if np.isnan(angle_v).any():         # 还有缺失值
-                scores.append('NaN')
+                scores[i] = np.nan
             else:
-                score = 1 - np.tanh(mean_squared_error(angle_v, stdAngle))
-                scores.append('{:.4f}'.format(score))
+                score = 100 * (1 - np.tanh(mean_squared_error(angle_v, stdAngle)))
+                scores[i] = score
         self.pos += 1
 
         return scores
