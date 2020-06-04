@@ -1,6 +1,6 @@
 import numpy as np
 from mxnet import ndarray
-from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
 
 np.seterr(invalid='ignore')
 # 需要测量角度的部位，每个部位需要用它本身和与之连接的两个节点来计算角度
@@ -69,9 +69,8 @@ class AngeleCal():
             if np.isnan(angle_v).any():         # 还有缺失值
                 scores.append('NaN')
             else:
-                s_r2 = r2_score(angle_v, stdAngle)                  # R2分数
-                s_cos = AngeleCal.vector_cos(angle_v, stdAngle)     # 余弦距离
-                scores.append('{:.4f}'.format(min(s_cos, s_r2)))    # 取分数较低的
+                score = 1 - np.tanh(mean_squared_error(angle_v, stdAngle))
+                scores.append('{:.4f}'.format(score))
         self.pos += 1
 
         return scores
