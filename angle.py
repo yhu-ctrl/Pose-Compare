@@ -6,14 +6,14 @@ np.seterr(invalid='ignore')
 # 需要测量角度的部位，每个部位需要用它本身和与之连接的两个节点来计算角度
 # 第一点是关节点
 KeyPoints = [
-    (5, 6, 7),       # 左肩
-    (6, 7, 8),       # 右肩
-    (7, 5, 9),       # 左臂
-    (8, 6, 10),      # 右臂
-    (11, 5, 13),     # 左胯
-    (12, 6, 14),     # 右胯
-    (13, 11, 15),    # 左膝
-    (14, 12, 16),    # 右膝
+    (5, 6, 7),      # 左肩
+    (6, 5, 8),      # 右肩
+    (7, 5, 9),      # 左臂
+    (8, 6, 10),     # 右臂
+    (11, 5, 13),    # 左胯
+    (12, 6, 14),    # 右胯
+    (13, 11, 15),   # 左膝
+    (14, 12, 16),   # 右膝
 ]
 
 class AngeleCal():
@@ -44,7 +44,7 @@ class AngeleCal():
                     # 角度
                     angle1 = np.arctan2(p1y - p0y, p1x - p0x)
                     angle2 = np.arctan2(p2y - p0y, p2x - p0x)
-                    angles[i][j] = angle2 - angle1
+                    angles[i][j] = np.abs(angle2 - angle1)
                 else:
                     angles[i][j] = np.nan
     
