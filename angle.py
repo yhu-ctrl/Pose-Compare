@@ -22,11 +22,6 @@ class AngeleCal():
         self.stdAngles = np.loadtxt(filename, delimiter='\t')
         self.pos = 0
 
-    # 计算向量夹角的余弦值
-    @staticmethod
-    def vector_cos(v1, v2):
-        return np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)
-
     # 计算角度
     @staticmethod
     def cal(coords, confidence, keypoint_thresh=0.2):
@@ -38,7 +33,6 @@ class AngeleCal():
             for j, keyPoint in enumerate(KeyPoints):
                 # 是否识别到这个关节
                 if joint_visible[i, keyPoint[0]] and joint_visible[i, keyPoint[1]] and joint_visible[i, keyPoint[2]]:
-                    
                     # 坐标
                     p0x = pts[keyPoint[0], 0].asscalar()
                     p0y = pts[keyPoint[0], 1].asscalar()
@@ -47,12 +41,10 @@ class AngeleCal():
                     p2x = pts[keyPoint[2], 0].asscalar()
                     p2y = pts[keyPoint[2], 1].asscalar()
 
-                    # 向量
-                    v1 = np.array([ p1x - p0x, p1y - p0y ])
-                    v2 = np.array([ p2x - p0x, p2y - p0y ])
-
-                    angles[i][j] = AngeleCal.vector_cos(v1, v2)
-
+                    # 角度
+                    angle1 = np.arctan2(p1y - p0y, p1x - p0x)
+                    angle2 = np.arctan2(p2y - p0y, p2x - p0x)
+                    angles[i][j] = angle2 - angle1
                 else:
                     angles[i][j] = np.nan
     
@@ -69,8 +61,7 @@ class AngeleCal():
             if np.isnan(angle_v).any():         # 还有缺失值
                 scores[i] = np.nan
             else:
-                score = 100 * (1 - np.tanh(mean_squared_error(angle_v, stdAngle)))
-                scores[i] = score
+                scores[i] = mean_squared_error(angle_v, stdAngle)
         self.pos += 1
 
-        return scores
+        return 100 * (1 - np.tanh(scores))
