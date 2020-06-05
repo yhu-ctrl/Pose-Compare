@@ -34,7 +34,7 @@ while ret1 and ret2:
     frame2 = cv.cvtColor(frame2, cv.COLOR_BGR2RGB) 
 
     # 目标检测
-    x, img = transform_test(frame1, short=512)
+    x, img = transform_test(frame1, short=512, max_size=680)
     x = x.as_in_context(ctx)
     class_IDs, scores, bounding_boxs = detector(x)
 
@@ -52,10 +52,10 @@ while ret1 and ret2:
         results = angeleCal.compare(angles).astype('U5')
 
     # 缩放示例视频并合并显示
-    height = int(img.shape[0])
-    width = int(height * frame2.shape[1] / frame2.shape[0])
-    frame2 = cv.resize(frame2, (width, height))
-    img = np.hstack((img, frame2))
+    width = int(img.shape[1])
+    height = int(width * frame2.shape[0] / frame2.shape[1])
+    frame2 = cv.resize(frame2, (width, height), cv.INTER_AREA)
+    img = np.vstack((img, frame2))
 
     cv_plot_image(img, 
         upperleft_txt=FPS.fps(), upperleft_txt_corner=(10,25),
