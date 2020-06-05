@@ -39,10 +39,10 @@ class AngeleCal():
                 p2x = pts[keyPoint[:, 2], 0].asnumpy()
                 p2y = pts[keyPoint[:, 2], 1].asnumpy()
 
-                angle1 = np.arctan2(p1y - p0y, p1x - p0x)
-                angle2 = np.arctan2(p2y - p0y, p2x - p0x)
+                angle1 = np.cos(np.arctan2(p1y - p0y, p1x - p0x))
+                angle2 = np.cos(np.arctan2(p2y - p0y, p2x - p0x))
 
-                angles[i][joint_computable] = np.abs(angle2 - angle1)
+                angles[i][joint_computable] = angle2 - angle1
     
         return angles
 
