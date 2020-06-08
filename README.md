@@ -9,7 +9,7 @@
   
 ## 安装
 ```sh
-$ pip install --pre mxnet-cu102 -f https://dist.mxnet.io/python/all
+$ pip install mxnet-cu102 -f https://dist.mxnet.io/python/all
 $ pip install -r requirements.txt
 ```
 
