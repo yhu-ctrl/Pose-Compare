@@ -42,7 +42,7 @@ class AngeleCal():
                 angle1 = np.arctan2(p1y - p0y, p1x - p0x)
                 angle2 = np.arctan2(p2y - p0y, p2x - p0x)
 
-                angles[i][joint_computable] = np.cos(angle2 - angle1)
+                angles[i][joint_computable] = np.sin(angle2 - angle1)
     
         return angles
 
